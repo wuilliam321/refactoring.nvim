@@ -177,8 +177,9 @@ local function inline_func_setup(refactor, bufnr)
 
         -- rewrites returned values into constants with its proper names
         local returned_values = get_function_returned_values(refactor, function_declaration, bufnr)
-        local constants = get_params_as_constants(refactor, function_receivers_names, returned_values)
         for _, reference in ipairs(function_references) do
+            local reference_receivers_names = get_function_receiver_names(refactor, reference:parent():parent(), bufnr)
+            local constants = get_params_as_constants(refactor, reference_receivers_names, returned_values)
             local region = utils.region_one_line_up_from_node(reference)
             for _, constant in ipairs(constants) do
                 local insert_text = lsp_utils.insert_text(region, constant)
